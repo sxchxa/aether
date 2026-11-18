@@ -1,0 +1,44 @@
+name: Signaler un bug
+description: Un réglage, une page ou une action d'Aether ne fonctionne pas comme prévu.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de prendre le temps de signaler ce problème. Pour une **faille de sécurité**, utilisez plutôt le signalement privé (onglet *Security*).
+  - type: input
+    id: version
+    attributes:
+      label: Version d'Aether
+      description: Visible en bas du menu ou dans Réglages.
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Version de Windows
+      placeholder: "Windows 11 24H2 (Famille / Pro)"
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: Que s'est-il passé ?
+      description: Ce que vous avez fait, ce que vous attendiez et ce qui s'est produit.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Étapes pour reproduire
+      placeholder: |
+        1. Ouvrir la section …
+        2. Activer le réglage …
+        3. …
+  - type: textarea
+    id: log
+    attributes:
+      label: Journal d'activité
+      description: Copiez les lignes utiles du journal (icône « Journal » en haut à droite).
+      render: text

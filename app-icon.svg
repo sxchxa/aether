@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>Aether</title>
+  <defs>
+    <!-- Bleu acier : clair au sommet, profond en bas -->
+    <linearGradient id="a" x1="512" y1="170" x2="512" y2="880" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6E9DEB"/>
+      <stop offset="1" stop-color="#2F5FC4"/>
+    </linearGradient>
+    <!-- Lame : légèrement plus sombre, pour la profondeur -->
+    <linearGradient id="b" x1="250" y1="620" x2="600" y2="860" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3D6ED2"/>
+      <stop offset="1" stop-color="#2853B2"/>
+    </linearGradient>
+  </defs>
+  <!-- Fond squircle sombre -->
+  <path fill="#0C1018" d="M512 32C843 32 992 181 992 512S843 992 512 992 32 843 32 512 181 32 512 32Z"/>
+  <!-- « A » aux traits épais et arrondis -->
+  <path d="M222 806L512 236L802 806" fill="none" stroke="url(#a)" stroke-width="124" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Lame courbe : part du pied gauche et se termine en pointe au centre -->
+  <path fill="url(#b)" d="M206 784C276 668 420 612 572 618C626 620 638 650 612 670C510 716 384 764 302 818C288 830 276 841 266 850L222 806Z"/>
+</svg>

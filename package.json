@@ -1,0 +1,52 @@
+{
+  "name": "aether",
+  "private": true,
+  "version": "1.1.0",
+  "description": "Aether — optimiseur système, stockage, réseau et gaming pour Windows 10/11 (Rust + Tauri v2)",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "tauri": "tauri",
+    "icons": "tauri icon app-icon.svg && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-icon.ps1",
+    "check:i18n": "node scripts/check-i18n.mjs",
+    "test": "vitest run",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"*.{ts,json}\" index.html",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"*.{ts,json}\" index.html",
+    "lint": "oxlint src"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.12.4",
+    "@tauri-apps/plugin-updater": "^2.14.1",
+    "i18next": "^27.1.1",
+    "lucide-react": "^1.73.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-i18next": "^18.0.1",
+    "zustand": "^5.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.5",
+    "@tauri-apps/cli": "^2.12.4",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "oxlint": "1.91.0",
+    "prettier": "3.6.2",
+    "tailwindcss": "^4.3.5",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vitest": "^3.2.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sxchxa/aether.git"
+  },
+  "homepage": "https://github.com/sxchxa/aether",
+  "bugs": {
+    "url": "https://github.com/sxchxa/aether/issues"
+  }
+}

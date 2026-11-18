@@ -1,0 +1,22 @@
+name: Proposer une amélioration
+description: Une nouvelle option, une fonction ou une amélioration de l'interface.
+labels: [amélioration]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: Votre idée
+      description: Que voudriez-vous voir dans Aether, et pourquoi ?
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source officielle (pour une nouvelle option d'optimisation)
+      description: Aether n'intègre que des réglages documentés par Microsoft ou présents dans les Paramètres Windows. Merci d'indiquer un lien.
+  - type: checkboxes
+    id: safe
+    attributes:
+      label: Vérifications
+      options:
+        - label: Ce réglage est réversible et ne réduit pas la sécurité de Windows.

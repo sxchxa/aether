@@ -1,0 +1,698 @@
+@import "tailwindcss";
+
+/* ═════════ Design System « Aether » — Noir moderne ═════════
+   Aplats profonds, bordures fines, accents mesurés, mouvements courts et fluides.
+   Les noms de classes (.glass, .surface-2, .btn-3d…) sont conservés pour les composants. */
+@theme {
+  --color-ink-950: #08090b;
+  --color-ink-900: #0c0d10;
+  --color-ink-850: #101115;
+  --color-ink-800: #141519;
+  --color-ink-700: #1b1c22;
+  /* Palette de la refonte : bleu acier discret, vert doux pour le positif, ambre/rouge réservés aux alertes. */
+  --color-indigo: #4677c9;
+  --color-indigo-soft: #8db4f5;
+  --color-cyan: #8db4f5;
+  --color-sky: #4677c9;
+  --color-emerald: #3fbf8f;
+  --color-amber: #f59e0b;
+  --color-violet: #8ea6c8;
+  --color-rose: #f43f5e;
+
+  --font-sans: "Segoe UI Variable Text", "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-fade-in: fade-in 160ms var(--ease-out) both;
+  --animate-scale-in: scale-in 180ms var(--ease-out) both;
+  --animate-slide-up: slide-up 200ms var(--ease-out) both;
+  --animate-slide-in-right: slide-in-right 220ms var(--ease-out) both;
+  --animate-pulse-soft: pulse-soft 2.4s ease-in-out infinite;
+  --animate-shimmer: shimmer 1.8s linear infinite;
+  --animate-ping-soft: ping-soft 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes slide-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  @keyframes pulse-soft {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+  @keyframes shimmer {
+    from {
+      background-position: -200% 0;
+    }
+    to {
+      background-position: 200% 0;
+    }
+  }
+  @keyframes ping-soft {
+    0% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+    80%,
+    100% {
+      transform: scale(2.4);
+      opacity: 0;
+    }
+  }
+}
+
+:root {
+  color-scheme: dark;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --text: #fafafa;
+  --text-2: #a1a1aa;
+  --text-3: #71717a;
+  --track: #1a1d23;
+  /* Bleu acier discret (éléments interactifs) et vert doux (états positifs). */
+  --accent: #4677c9;
+  --accent-soft: #8db4f5;
+  --steel: #8ea6c8;
+  --good: #3fbf8f;
+  --panel: #0a0c0f;
+  --card: #0d0f13;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background: #07080a;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-feature-settings: "cv11", "ss01", "ss03";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  user-select: none;
+  overflow: hidden;
+}
+
+/* ───── Fond : noir profond, lueur à peine perceptible ───── */
+.aether-backdrop {
+  /* Noir profond avec un reflet diagonal à peine perceptible (comme la maquette). */
+  background:
+    radial-gradient(1100px 520px at 78% -12%, rgba(120, 150, 200, 0.075), transparent 62%),
+    linear-gradient(155deg, rgba(255, 255, 255, 0.022) 0%, transparent 38%), #07080a;
+}
+
+/* ───── Cartes ───── */
+.glass {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.026), rgba(255, 255, 255, 0.01)), var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.065);
+  border-radius: 16px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025),
+    0 14px 34px -22px rgba(0, 0, 0, 0.8);
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease;
+}
+
+.glass-float {
+  background: #11141a;
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 24px 64px -16px rgba(0, 0, 0, 0.85);
+}
+
+/* Survol : seule la bordure et le fond changent (aucun déplacement coûteux) */
+.lift {
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+.lift:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* ───── Niveau 2 : zones internes ───── */
+.surface-2 {
+  background: #111419;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+.surface-2.lift:hover,
+button.surface-2:hover:not(:disabled) {
+  background: #18191e;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.well {
+  background: #0b0c0e;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ───── Boutons ───── */
+.btn-3d-primary {
+  color: #f4f6fa;
+  background: linear-gradient(180deg, #1a1f28, #141820);
+  border: 1px solid rgba(141, 180, 245, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 8px 22px -14px rgba(0, 0, 0, 0.9);
+}
+.btn-3d-primary:hover:not(:disabled) {
+  background: linear-gradient(180deg, #1e2530, #171c25);
+  border-color: rgba(141, 180, 245, 0.38);
+}
+
+.btn-3d-indigo {
+  color: #fff;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+}
+.btn-3d-indigo:hover:not(:disabled) {
+  background: #5285d6;
+  border-color: #5285d6;
+}
+
+.btn-3d {
+  color: #e4e4e7;
+  background: #13161c;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.btn-3d:hover:not(:disabled) {
+  background: #1e1f24;
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.btn-3d-danger {
+  color: #fda4af;
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid rgba(244, 63, 94, 0.25);
+}
+.btn-3d-danger:hover:not(:disabled) {
+  background: rgba(244, 63, 94, 0.16);
+}
+
+/* ───── Badges d'icônes ───── */
+.icon-badge {
+  --tone: 161, 161, 170;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 8px;
+  color: var(--steel);
+  background: transparent;
+}
+.tone-sky {
+  --tone: 96, 165, 250;
+}
+.tone-emerald {
+  --tone: 74, 222, 128;
+}
+.tone-amber {
+  --tone: 251, 191, 36;
+}
+.tone-violet {
+  --tone: 167, 139, 250;
+}
+.tone-indigo {
+  --tone: 165, 180, 252;
+}
+.tone-rose {
+  --tone: 251, 113, 133;
+}
+.tone-slate {
+  --tone: 161, 161, 170;
+}
+
+/* ───── Interrupteur ───── */
+.toggle-track {
+  background: #1c2027;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.toggle-track[data-on="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.toggle-knob {
+  background: #e8ecf3;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+.toggle-track[data-on="true"] .toggle-knob {
+  background: #fff;
+}
+
+/* ───── Carte « héros » ───── */
+.hero-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #121214;
+}
+
+/* ───── Micro-interactions (transform/opacity uniquement : fluide même sans GPU) ───── */
+button:not(:disabled):active,
+[role="button"]:not([aria-disabled="true"]):active {
+  scale: 0.97;
+}
+button,
+[role="button"] {
+  transition-property: scale, background-color, border-color, color, opacity;
+  transition-duration: 160ms;
+  transition-timing-function: var(--ease-out-expo);
+}
+
+/* L'interrupteur s'étire légèrement sous le doigt, puis glisse */
+.toggle-knob {
+  transition:
+    translate 200ms var(--ease-out),
+    scale 150ms var(--ease-out);
+}
+.toggle-track:active .toggle-knob {
+  scale: 1.15 1;
+}
+
+/* Les icônes réagissent au survol de leur carte ou ligne */
+.icon-badge {
+  transition:
+    scale 150ms var(--ease-out),
+    background-color 150ms linear;
+}
+.group:hover .icon-badge,
+button:hover > .icon-badge {
+  color: #e4e4e7;
+}
+
+/* Changement de page : fondu d'opacité court (aucun recalcul de mise en page) */
+.page-enter {
+  animation: page-in 200ms var(--ease-out) both;
+}
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Les jauges n'utilisent plus de filtre (coûteux à chaque image) */
+.glow-arc {
+  filter: none;
+}
+
+/* Les éléments de grille peuvent rétrécir sous la largeur de leur contenu :
+   évite tout débordement (textes longs, interrupteurs) sur les petits écrans. */
+.grid > * {
+  min-width: 0;
+}
+
+/* Lignes de longues listes : rendu différé hors écran. */
+.cv-row {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 60px;
+}
+
+.anchor-card {
+  scroll-margin-top: 24px;
+}
+
+.scroll-area {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  overscroll-behavior: contain;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.07) 50%, rgba(255, 255, 255, 0.03) 75%);
+  background-size: 200% 100%;
+  /* Pulsation d'opacité (composité GPU) plutôt qu'un balayage de fond repeint à chaque image. */
+  animation: var(--animate-pulse-soft);
+  border-radius: 10px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid rgba(59, 130, 246, 0.6);
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+
+input,
+textarea,
+.selectable {
+  user-select: text;
+}
+
+/* Tailwind v4 rend les boutons en curseur « flèche » : on rétablit la main sur tout élément cliquable. */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+[role="switch"]:not(:disabled),
+label:has(input),
+label:has([role="switch"]),
+summary {
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Jauges : animées par transform (composité GPU), jamais par width. */
+.meter-fill {
+  transform-origin: left center;
+  transition: transform 400ms var(--ease-out);
+  will-change: transform;
+}
+
+/* ───── Mouvement : court, net, sans rebond (inspiré de Fluent / Windows 11) ───── */
+:root {
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Section active du menu : le fond glisse, une fine barre d'accent marque la sélection */
+.nav-pill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  transition:
+    transform 250ms var(--ease-out),
+    height 250ms var(--ease-out),
+    opacity 150ms linear;
+  will-change: transform;
+  pointer-events: none;
+}
+.nav-pill::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3px;
+  height: 16px;
+  margin-top: -8px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+/* Clic : légère compression, retour immédiat */
+button {
+  transition-property: background-color, border-color, color, box-shadow, opacity, scale;
+  transition-duration: 120ms;
+  transition-timing-function: var(--ease-out);
+}
+button:not(:disabled):active {
+  scale: 0.98;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 1ms !important;
+  }
+}
+/* ───── Menu latéral (maquette premium) ───── */
+.sidebar-panel {
+  background: linear-gradient(180deg, #0b0d11 0%, #090a0d 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+.nav-pill {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.035));
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 10px 24px -16px rgba(0, 0, 0, 0.9);
+}
+.nav-pill::before {
+  left: -1px;
+  width: 2px;
+  height: 18px;
+  margin-top: -9px;
+  background: var(--accent-soft);
+  opacity: 0.85;
+}
+.nav-active {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.035));
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* ═════════ Thème clair : la même identité, couleurs inversées pour un fond lumineux ═════════
+   Les couleurs utilitaires (blanc, noir, gris zinc/slate) sont des variables : les redéfinir suffit
+   pour que toutes les pages basculent, sans dupliquer leurs styles. */
+:root {
+  --grid-line: rgba(255, 255, 255, 0.04);
+  --ring-track: rgba(255, 255, 255, 0.05);
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-white: #11141a;
+  --color-black: #ffffff;
+  --color-zinc-50: #0f1115;
+  --color-zinc-100: #171a20;
+  --color-zinc-200: #262a31;
+  --color-zinc-300: #394049;
+  --color-zinc-400: #555c67;
+  --color-zinc-500: #6c737e;
+  --color-zinc-600: #949aa4;
+  --color-zinc-700: #c3c8cf;
+  --color-zinc-800: #dde1e6;
+  --color-zinc-900: #eceef1;
+  --color-zinc-950: #f5f6f8;
+  --color-slate-100: #171a20;
+  --color-slate-200: #262a31;
+  --color-slate-300: #394049;
+  --color-slate-400: #555c67;
+  --color-slate-500: #6c737e;
+  --color-slate-600: #949aa4;
+  --color-emerald-300: #0f7a54;
+  --color-amber-300: #a8580a;
+  --color-amber-400: #c26a0c;
+  --color-rose-300: #be1e45;
+  --color-cyan: #2f5fb3;
+  --color-indigo-soft: #2f5fb3;
+  --color-emerald: #16825d;
+  --text: #11141a;
+  --text-2: #3f4650;
+  --text-3: #6c737e;
+  --border: rgba(15, 23, 42, 0.08);
+  --border-strong: rgba(15, 23, 42, 0.14);
+  --track: #e2e5ea;
+  --accent-soft: #2f5fb3;
+  --steel: #5a6f8f;
+  --good: #16825d;
+  --card: #ffffff;
+  --grid-line: rgba(15, 23, 42, 0.06);
+  --ring-track: rgba(15, 23, 42, 0.07);
+}
+:root[data-theme="light"],
+:root[data-theme="light"] body,
+:root[data-theme="light"] #root {
+  background: #f3f4f7;
+}
+:root[data-theme="light"] .aether-backdrop {
+  background:
+    radial-gradient(1100px 520px at 78% -12%, rgba(70, 119, 201, 0.08), transparent 62%),
+    linear-gradient(155deg, rgba(255, 255, 255, 0.7) 0%, transparent 38%), #f3f4f7;
+}
+:root[data-theme="light"] .glass {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 14px 34px -24px rgba(15, 23, 42, 0.25);
+}
+:root[data-theme="light"] .glass-float {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.12);
+  box-shadow: 0 24px 64px -16px rgba(15, 23, 42, 0.3);
+}
+:root[data-theme="light"] .surface-2 {
+  background: #f6f7f9;
+  border-color: rgba(15, 23, 42, 0.07);
+}
+:root[data-theme="light"] .surface-2.lift:hover,
+:root[data-theme="light"] button.surface-2:hover:not(:disabled) {
+  background: #eef0f3;
+  border-color: rgba(15, 23, 42, 0.14);
+}
+:root[data-theme="light"] .well {
+  background: #f1f3f6;
+  border-color: rgba(15, 23, 42, 0.06);
+}
+:root[data-theme="light"] .sidebar-panel {
+  background: #fbfbfc;
+  border-right-color: rgba(15, 23, 42, 0.07);
+}
+:root[data-theme="light"] .nav-pill,
+:root[data-theme="light"] .nav-active {
+  background: #eef1f6;
+  border-color: rgba(15, 23, 42, 0.07);
+  box-shadow: none;
+}
+:root[data-theme="light"] .btn-3d {
+  color: #171a20;
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.12);
+}
+:root[data-theme="light"] .btn-3d:hover:not(:disabled) {
+  background: #f3f5f8;
+  border-color: rgba(15, 23, 42, 0.2);
+}
+:root[data-theme="light"] .btn-3d-primary {
+  color: #11141a;
+  background: #ffffff;
+  border-color: rgba(47, 95, 179, 0.35);
+  box-shadow: 0 6px 18px -12px rgba(15, 23, 42, 0.4);
+}
+:root[data-theme="light"] .btn-3d-primary:hover:not(:disabled) {
+  background: #f4f7fc;
+  border-color: rgba(47, 95, 179, 0.55);
+}
+:root[data-theme="light"] .btn-3d-indigo,
+:root[data-theme="light"] .btn-3d-indigo:hover:not(:disabled) {
+  color: #ffffff;
+}
+:root[data-theme="light"] .toggle-track {
+  background: #d9dde3;
+  border-color: rgba(15, 23, 42, 0.08);
+}
+:root[data-theme="light"] .toggle-knob {
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.3);
+}
+:root[data-theme="light"] .skeleton {
+  background: linear-gradient(90deg, rgba(15, 23, 42, 0.04) 25%, rgba(15, 23, 42, 0.08) 50%, rgba(15, 23, 42, 0.04) 75%);
+  background-size: 200% 100%;
+}
+:root[data-theme="light"] .scroll-area {
+  scrollbar-color: rgba(15, 23, 42, 0.18) transparent;
+}
+
+/* ═════════ Contraste renforcé (Réglages > Accessibilité) ═════════ */
+:root[data-contrast="high"] {
+  --color-zinc-400: #c7ccd4;
+  --color-zinc-500: #aab1bb;
+  --color-zinc-600: #8a919c;
+  --text-3: #aab1bb;
+  --steel: #b9c9e2;
+}
+:root[data-contrast="high"] .glass,
+:root[data-contrast="high"] .glass-float,
+:root[data-contrast="high"] .surface-2,
+:root[data-contrast="high"] .nav-pill {
+  border-color: rgba(255, 255, 255, 0.22);
+}
+:root[data-theme="light"][data-contrast="high"] {
+  --color-zinc-400: #2f343c;
+  --color-zinc-500: #3f4650;
+  --color-zinc-600: #565d68;
+  --text-3: #3f4650;
+  --steel: #2f4466;
+}
+:root[data-theme="light"][data-contrast="high"] .glass,
+:root[data-theme="light"][data-contrast="high"] .glass-float,
+:root[data-theme="light"][data-contrast="high"] .surface-2,
+:root[data-theme="light"][data-contrast="high"] .nav-pill {
+  border-color: rgba(15, 23, 42, 0.3);
+}
+
+/* ═════════ Contraste élevé de Windows (couleurs système imposées) ═════════ */
+@media (forced-colors: active) {
+  .glass,
+  .glass-float,
+  .surface-2,
+  .nav-pill,
+  .toggle-track,
+  button {
+    border: 1px solid CanvasText;
+  }
+  .nav-pill::before,
+  .toggle-track[data-on="true"] {
+    background: Highlight;
+    forced-color-adjust: none;
+  }
+}
+
+/* Interrupteur activé : toujours en bleu acier, quel que soit le thème. */
+:root[data-theme="light"] .toggle-track[data-on="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ───── Barre du haut : le contenu défile en fondu sous les commandes de fenêtre ───── */
+.scroll-fade-top {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, transparent 30px, #000 64px);
+  mask-image: linear-gradient(to bottom, transparent 0, transparent 30px, #000 64px);
+}
+.titlebar-controls {
+  background: color-mix(in srgb, var(--panel) 82%, transparent);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+}
+:root[data-theme="light"] .titlebar-controls {
+  background: rgba(255, 255, 255, 0.82);
+}
+@media (forced-colors: active) {
+  .scroll-fade-top {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}

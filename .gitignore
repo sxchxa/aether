@@ -1,0 +1,39 @@
+# Dépôts de référence locaux (ne jamais publier)
+_ui_inspiration/
+
+# Node / Vite
+node_modules/
+dist/
+*.local
+
+# Rust / Tauri
+src-tauri/target/
+src-tauri/gen/schemas/
+
+# Clés de signature des mises à jour (secrets)
+*.key
+*.key.pub.bak
+
+# Divers
+.DS_Store
+Thumbs.db
+*.log
+.vscode/*
+!.vscode/extensions.json
+
+# Notes de travail personnelles (retirez ces lignes pour les publier)
+CLAUDE.md
+claude2.md
+refonte graphique.md
+Exemple.jpg
+
+# Tests et outils
+coverage/
+
+# Icônes générées par « tauri icon » pour d'autres plateformes (Aether ne cible que Windows)
+src-tauri/icons/android/
+src-tauri/icons/ios/
+src-tauri/icons/Square*Logo.png
+src-tauri/icons/StoreLogo.png
+src-tauri/icons/icon.icns
+src-tauri/icons/64x64.png

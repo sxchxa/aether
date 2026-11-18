@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "import"],
+  "categories": { "correctness": "error", "suspicious": "error" },
+  "rules": {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "error",
+    "react/react-in-jsx-scope": "off",
+    "import/no-unassigned-import": ["error", { "allow": ["**/*.css"] }],
+    "import/no-named-as-default-member": "off",
+    // Règles réservées au React Compiler (non utilisé) : elles signalent des schémas voulus ici (icônes choisies dans une table fixe, défilement déclenché par la longueur d'une liste, horloge lue à l'affichage).
+    "react/static-components": "off",
+    "react/purity": "off",
+    "react/refs": "off",
+    "react/immutability": "off",
+    "react/set-state-in-effect": "off",
+    "react/exhaustive-effect-dependencies": "off",
+    "react/memo-dependencies": "off"
+  },
+  "ignorePatterns": ["dist", "node_modules", "src-tauri", "coverage"]
+}

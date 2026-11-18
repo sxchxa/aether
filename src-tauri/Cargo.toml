@@ -1,0 +1,58 @@
+[package]
+name = "aether"
+version = "1.1.0"
+description = "Aether — optimiseur système, stockage, réseau et gaming pour Windows 10/11"
+authors = ["Aether Contributors"]
+license = "MIT"
+repository = "https://github.com/sxchxa/aether"
+edition = "2021"
+rust-version = "1.85"
+
+[lib]
+name = "aether_lib"
+crate-type = ["rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon", "image-png"] }
+tauri-plugin-updater = "2"
+tauri-plugin-single-instance = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "net", "sync"] }
+sysinfo = "0.40"
+trash = "5"
+walkdir = "2"
+sha2 = "0.10"
+# Test de débit : mêmes versions que celles déjà embarquées par le module de mise à jour.
+reqwest = { version = "0.13", default-features = false, features = ["rustls-no-provider", "stream", "json"] }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std"] }
+bytes = "1"
+winreg = "0.56"
+windows-service = "0.8"
+windows-sys = { version = "0.61", features = [
+    "Win32_Foundation",
+    "Win32_System_ProcessStatus",
+    "Win32_System_Threading",
+    "Win32_Graphics_Gdi",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_NetworkManagement_IpHelper",
+    "Win32_NetworkManagement_Ndis",
+    "Win32_Globalization",
+    "Win32_System_Power",
+    "Win32_System_LibraryLoader",
+    "Win32_System_Services",
+] }
+
+[dev-dependencies]
+tempfile = "3"
+
+[profile.release]
+lto = true
+opt-level = "s"
+strip = true
+codegen-units = 1
+panic = "abort"

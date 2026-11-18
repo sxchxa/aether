@@ -1,0 +1,81 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Aether",
+  "version": "1.1.0",
+  "identifier": "app.aether.optimizer",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "withGlobalTauri": false,
+    "windows": [
+      {
+        "label": "main",
+        "title": "Aether",
+        "width": 1280,
+        "height": 760,
+        "minWidth": 900,
+        "minHeight": 600,
+        "center": true,
+        "resizable": true,
+        "decorations": false,
+        "shadow": true,
+        "backgroundColor": "#08090B"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src ipc: http://ipc.localhost"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis"
+    ],
+    "publisher": "Aether Contributors",
+    "copyright": "Copyright (c) 2026 Aether Contributors — MIT",
+    "license": "MIT",
+    "category": "Utility",
+    "shortDescription": "Optimiseur système, stockage, réseau et gaming pour Windows",
+    "longDescription": "Aether optimise Windows 10/11 de façon idempotente et réversible : nettoyage du stockage, services, énergie, gaming, carte réseau, DNS, TCP et réparation système.",
+    "createUpdaterArtifacts": true,
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "webviewInstallMode": {
+        "type": "embedBootstrapper",
+        "silent": true
+      },
+      "nsis": {
+        "displayLanguageSelector": true,
+        "languages": [
+          "French",
+          "English",
+          "Spanish",
+          "German",
+          "Italian"
+        ],
+        "installMode": "perMachine",
+        "installerHooks": "./windows/hooks.nsh"
+      }
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDQwNzIwMUQyNTU0NEJCODEKUldTQnUwUlYwZ0Z5UUxKeGpVL1I0aFF2cGxBbHBQN3ZBS0YwbVFhcUw0UjlPaGNRcG1Ic3VCZGMK",
+      "endpoints": [
+        "https://github.com/sxchxa/aether/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  }
+}

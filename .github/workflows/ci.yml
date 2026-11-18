@@ -1,0 +1,65 @@
+# Vérifications à chaque modification : mise en forme, analyse statique, types, traductions, tests,
+# build de l'interface, Clippy et tests Rust.
+# Les tests qui modifient réellement Windows (marqués `#[ignore]`) ne sont jamais lancés ici.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Dépendances de l'interface
+        run: npm ci
+
+      - name: Mise en forme (Prettier)
+        run: npm run format:check
+
+      - name: Analyse statique (oxlint)
+        run: npm run lint
+
+      - name: Types TypeScript
+        run: npm run typecheck
+
+      - name: Traductions (5 langues)
+        run: npm run check:i18n
+
+      - name: Tests de l'interface
+        run: npm test
+
+      - name: Build de l'interface
+        run: npx vite build
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Mise en forme (rustfmt)
+        working-directory: src-tauri
+        run: cargo fmt --check
+
+      - name: Clippy (0 avertissement)
+        working-directory: src-tauri
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Tests Rust
+        working-directory: src-tauri
+        run: cargo test
