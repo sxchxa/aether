@@ -598,6 +598,13 @@ const en: Messages = {
     ramTitle: "Memory almost full ({{percent}})",
     ramDesc: "Free up unused memory to make your PC more responsive.",
     ramFix: "Free up",
+    stepProtection: "Turn on System Protection",
+    stepPoint: "Create a restore point",
+    planTitle: "What “Optimize all” will do",
+    planIntro: "Here is every single action. Each one can also be done by hand from the menu shown on the right.",
+    planSafety: "Safety",
+    planRun: "Run {{count}} action(s)",
+    planManual: "Open this setting to do it manually",
   },
   quick: {
     ramShort: "RAM",

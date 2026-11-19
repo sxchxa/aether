@@ -53,6 +53,12 @@ export function prepareRestorePoint(): void {
   void createPoint("Aether : point automatique");
 }
 
+/** `ensureRestorePoint` créera un nouveau point (affiché à l'avance dans le détail des actions). */
+export function willCreateRestorePoint(): boolean {
+  const restore = useApp.getState().restore;
+  return autoRestoreEnabled() && !(restore && !restore.enabled) && !hasRecentPoint();
+}
+
 /**
  * Garantit un point de restauration récent avant une modification groupée. Instantané lorsqu'un
  * point de moins de 24 h existe ; ne bloque jamais l'optimisation en cas d'échec.

@@ -603,6 +603,13 @@ const de: Messages = {
     ramTitle: "Arbeitsspeicher fast voll ({{percent}})",
     ramDesc: "Geben Sie ungenutzten Speicher frei, damit alles wieder flotter läuft.",
     ramFix: "Freigeben",
+    stepProtection: "Computerschutz aktivieren",
+    stepPoint: "Wiederherstellungspunkt erstellen",
+    planTitle: "Was „Alles optimieren“ tun wird",
+    planIntro: "Hier ist jede einzelne Aktion. Jede kann auch manuell über das rechts angegebene Menü ausgeführt werden.",
+    planSafety: "Sicherheit",
+    planRun: "{{count}} Aktion(en) ausführen",
+    planManual: "Diese Einstellung öffnen, um sie manuell vorzunehmen",
   },
   quick: {
     ramShort: "RAM",

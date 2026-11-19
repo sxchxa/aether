@@ -7,10 +7,18 @@ import { fmt, useI18n } from "../../i18n";
 import { api, errorMessage } from "../../lib/ipc";
 import { ensureRestorePoint } from "../../lib/safety";
 import { formatBytes, formatPercent } from "../../lib/format";
-import { useApp } from "../../store/app";
+import { type SectionId, useApp } from "../../store/app";
+import { tweakLocation } from "./locations";
 import { ramPercent, useMetrics } from "../../store/metrics";
 
 export type FindingId = "protection" | "point" | "junk" | "tweaks" | "disk" | "startup" | "display" | "ram";
+
+/** Une action précise de la correction, avec l'endroit où la faire à la main. */
+export interface FixStep {
+  label: string;
+  section: SectionId;
+  anchor: string;
+}
 
 export interface Finding {
   id: FindingId;
@@ -21,6 +29,8 @@ export interface Finding {
   fixLabel: string;
   /** Corrigé par « Tout corriger » (sinon : action guidée vers la bonne page). */
   auto: boolean;
+  /** Détail exhaustif de ce que fait `fix` (aucune action cachée). */
+  steps: FixStep[];
   fix: () => Promise<void>;
 }
 
@@ -54,6 +64,7 @@ export function useFindings(startupEnabled: number | null): Finding[] {
       desc: m.scan.protectionDesc,
       fixLabel: m.scan.protectionFix,
       auto: true,
+      steps: [{ label: m.scan.stepProtection, section: "overview", anchor: "ov-protection" }],
       fix: async () => setRestore(await api.restoreEnable()),
     });
   } else if (restore?.enabled) {
@@ -67,13 +78,17 @@ export function useFindings(startupEnabled: number | null): Finding[] {
         desc: m.scan.pointDesc,
         fixLabel: m.scan.pointFix,
         auto: true,
+        steps: [{ label: m.scan.stepPoint, section: "overview", anchor: "ov-protection" }],
         fix: async () => setRestore(await api.restoreCreate("Aether")),
       });
     }
   }
 
   // Fichiers inutiles : uniquement les règles sûres sélectionnées par défaut, sans application à fermer.
-  const safeRules = (rules ?? []).filter((r) => r.risk === "safe" && r.defaultSelected && r.processes.length === 0 && r.roots.length > 0);
+  // Seules les règles qui ont réellement quelque chose à nettoyer : la liste affichée = ce qui est fait.
+  const safeRules = (rules ?? []).filter(
+    (r) => r.risk === "safe" && r.defaultSelected && r.processes.length === 0 && r.roots.length > 0 && (scan?.[r.id]?.bytes ?? 0) > 0,
+  );
   const junk = safeRules.reduce((sum, r) => sum + (scan?.[r.id]?.bytes ?? 0), 0);
   if (junk > 20 * 1024 * 1024) {
     out.push({
@@ -84,6 +99,11 @@ export function useFindings(startupEnabled: number | null): Finding[] {
       desc: m.scan.junkDesc,
       fixLabel: m.scan.junkFix,
       auto: true,
+      steps: safeRules.map((r) => ({
+        label: `${(m.rules as Record<string, { title: string } | undefined>)[r.id]?.title ?? r.id} · ${formatBytes(scan?.[r.id]?.bytes ?? 0, lang)}`,
+        section: "storage",
+        anchor: `st-${r.category}`,
+      })),
       fix: async () => {
         await api.storageClean(safeRules.map((r) => r.id));
         await runScan(true);
@@ -92,11 +112,16 @@ export function useFindings(startupEnabled: number | null): Finding[] {
   }
 
   // Les effets visuels sont une affaire de goût : jamais appliqués automatiquement.
-  const safeTweaks = Object.values(tweaks).filter((t) => t.risk === "safe" && !isPreference(t) && t.probe.available && !t.probe.applied);
+  // Uniquement les réglages présents dans un menu : tout ce qui est appliqué ici peut l'être à la main.
+  const tweakTitle = (id: string) => (m.tweaks as Record<string, { title: string } | undefined>)[id]?.title ?? id;
+  const safeTweaks = Object.values(tweaks).flatMap((t) => {
+    const where = tweakLocation(t.id);
+    return t.risk === "safe" && !isPreference(t) && t.probe.available && !t.probe.applied && where ? [{ id: t.id, where }] : [];
+  });
   if (safeTweaks.length > 0) {
     const titles = safeTweaks
       .slice(0, 3)
-      .map((t) => (m.tweaks as Record<string, { title: string } | undefined>)[t.id]?.title ?? t.id)
+      .map((t) => tweakTitle(t.id))
       .join(" · ");
     out.push({
       id: "tweaks",
@@ -106,6 +131,7 @@ export function useFindings(startupEnabled: number | null): Finding[] {
       desc: safeTweaks.length > 3 ? `${titles}…` : titles,
       fixLabel: m.scan.tweaksFix,
       auto: true,
+      steps: safeTweaks.map((t) => ({ label: tweakTitle(t.id), ...t.where })),
       fix: async () => {
         await api.tweaksOptimizeMany(safeTweaks.map((t) => t.id));
         await loadTweaks();
@@ -123,6 +149,7 @@ export function useFindings(startupEnabled: number | null): Finding[] {
       desc: m.scan.diskDesc,
       fixLabel: m.scan.diskFix,
       auto: false,
+      steps: [],
       fix: async () => goTo("storage", "st-analyzer"),
     });
   }
@@ -136,6 +163,7 @@ export function useFindings(startupEnabled: number | null): Finding[] {
       desc: m.scan.startupDesc,
       fixLabel: m.scan.startupFix,
       auto: false,
+      steps: [],
       fix: async () => goTo("system", "sy-startup"),
     });
   }
@@ -149,6 +177,7 @@ export function useFindings(startupEnabled: number | null): Finding[] {
       desc: fmt(m.scan.displayDesc, { current: info.display.currentHz }),
       fixLabel: m.scan.displayFix,
       auto: false,
+      steps: [],
       fix: () => api.openSettingsPage("ms-settings:display-advanced"),
     });
   }
@@ -162,6 +191,7 @@ export function useFindings(startupEnabled: number | null): Finding[] {
       desc: m.scan.ramDesc,
       fixLabel: m.scan.ramFix,
       auto: true,
+      steps: [{ label: m.quick.ram, section: "performance", anchor: "pf-ram" }],
       fix: async () => {
         await api.ramPurge();
       },

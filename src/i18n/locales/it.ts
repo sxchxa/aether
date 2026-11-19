@@ -601,6 +601,13 @@ const it: Messages = {
     ramTitle: "Memoria quasi piena ({{percent}})",
     ramDesc: "Libera la memoria inutilizzata per recuperare reattività.",
     ramFix: "Libera",
+    stepProtection: "Attiva la protezione del sistema",
+    stepPoint: "Crea un punto di ripristino",
+    planTitle: "Cosa farà «Ottimizza tutto»",
+    planIntro: "Ecco ogni singola azione. Ognuna può essere eseguita anche a mano dal menu indicato a destra.",
+    planSafety: "Sicurezza",
+    planRun: "Esegui {{count}} azione/i",
+    planManual: "Apri questa impostazione per farlo manualmente",
   },
   quick: {
     ramShort: "RAM",

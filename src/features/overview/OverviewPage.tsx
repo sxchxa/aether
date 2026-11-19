@@ -30,10 +30,10 @@ import { api, errorMessage } from "../../lib/ipc";
 import { formatDate } from "../../lib/format";
 import type { GuidedProfile, TweakReport, UserLevel } from "../../lib/types";
 import { atLeast } from "../../lib/level";
-import { ensureRestorePoint } from "../../lib/safety";
+import { ensureRestorePoint, willCreateRestorePoint } from "../../lib/safety";
 import { useApp } from "../../store/app";
 import { Hero, LastScanCard, PerfChart, StatRow } from "./Dashboard";
-import { type Finding, useFindings, useFixAll } from "./findings";
+import { type Finding, type FixStep, useFindings, useFixAll } from "./findings";
 import { MeasureCard } from "./MeasureCard";
 
 function countChanged(reports: TweakReport[]): number {
@@ -54,6 +54,7 @@ interface ProfileDef {
 }
 
 export function OverviewPage() {
+  const { m } = useI18n();
   const loadTweaks = useApp((s) => s.loadTweaks);
   const loadRestore = useApp((s) => s.loadRestore);
   const loadRules = useApp((s) => s.loadRules);
@@ -92,12 +93,15 @@ export function OverviewPage() {
     await analyze();
   }, [fixAll, analyze]);
 
-  // La palette de commandes (Ctrl+K) déclenche la même action.
+  // « Tout optimiser » n'agit jamais à l'aveugle : le détail de chaque action est d'abord affiché.
+  const [planOpen, setPlanOpen] = useState(false);
+
+  // La palette de commandes (Ctrl+K) ouvre le même détail.
   useEffect(() => {
-    const onExpress = () => void fixEverything();
+    const onExpress = () => setPlanOpen(true);
     window.addEventListener("aether:express", onExpress);
     return () => window.removeEventListener("aether:express", onExpress);
-  }, [fixEverything]);
+  }, []);
 
   const autoCount = findings.filter((f) => f.auto).length;
 
@@ -107,10 +111,22 @@ export function OverviewPage() {
         busy={busy}
         fixCount={autoCount}
         findingCount={findings.length}
-        onFix={() => void fixEverything()}
+        onFix={() => setPlanOpen(true)}
         analyzing={analyzing}
         onAnalyze={() => void analyze()}
       />
+      {planOpen && (
+        <FixPlanModal
+          title={m.scan.planTitle}
+          findings={findings.filter((f) => f.auto)}
+          safetyPoint
+          onClose={() => setPlanOpen(false)}
+          onRun={() => {
+            setPlanOpen(false);
+            void fixEverything();
+          }}
+        />
+      )}
       <StatRow />
       <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         <PerfChart />
@@ -132,6 +148,82 @@ export function OverviewPage() {
   );
 }
 
+/**
+ * Détail exhaustif d'une correction (« Tout optimiser » ou une seule ligne) : chaque action et le
+ * menu où la faire à la main. `safetyPoint` : l'exécution crée d'abord un point de restauration.
+ */
+function FixPlanModal({
+  title,
+  findings,
+  safetyPoint = false,
+  onClose,
+  onRun,
+}: {
+  title: string;
+  findings: Finding[];
+  safetyPoint?: boolean;
+  onClose: () => void;
+  onRun: () => void;
+}) {
+  const { m } = useI18n();
+  const goTo = useApp((s) => s.goTo);
+  const [autoPoint] = useState(
+    () => safetyPoint && !findings.some((f) => f.id === "point" || f.id === "protection") && willCreateRestorePoint(),
+  );
+  const groups: { title: string; steps: FixStep[] }[] = [
+    ...(autoPoint
+      ? [{ title: m.scan.planSafety, steps: [{ label: m.scan.stepPoint, section: "overview" as const, anchor: "ov-protection" }] }]
+      : []),
+    ...findings.map((f) => ({ title: f.title, steps: f.steps })),
+  ];
+  const total = groups.reduce((n, g) => n + g.steps.length, 0);
+  return (
+    <Modal
+      open
+      title={title}
+      onClose={onClose}
+      footer={
+        <>
+          <Button onClick={onClose}>{m.common.cancel}</Button>
+          <Button variant="primary" disabled={total === 0} onClick={onRun}>
+            {fmt(m.scan.planRun, { count: total })}
+          </Button>
+        </>
+      }
+    >
+      <p className="text-[12.5px]">{m.scan.planIntro}</p>
+      <div className="scroll-area mt-3 max-h-[380px] space-y-4 pr-1">
+        {groups.map((g) => (
+          <section key={g.title}>
+            <h3 className="mb-1.5 text-[12.5px] font-semibold text-white">{g.title}</h3>
+            <ul className="space-y-1">
+              {g.steps.map((s) => (
+                <li key={`${s.anchor}:${s.label}`} className="surface-2 flex items-center gap-2 rounded-lg px-3 py-2">
+                  <span className="min-w-0 flex-1 truncate text-[12.5px] text-zinc-200" title={s.label}>
+                    {s.label}
+                  </span>
+                  <button
+                    type="button"
+                    className="flex shrink-0 items-center gap-1 text-[11.5px] text-[var(--accent-soft)] hover:underline"
+                    title={m.scan.planManual}
+                    onClick={() => {
+                      onClose();
+                      goTo(s.section, s.anchor);
+                    }}
+                  >
+                    {m.nav[s.section]}
+                    <ArrowRight className="size-3" aria-hidden />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    </Modal>
+  );
+}
+
 function FindingsCard({
   findings,
   analyzing,
@@ -149,6 +241,12 @@ function FindingsCard({
   const toast = useApp((s) => s.toast);
   const dryRun = useApp((s) => s.dryRun);
   const [busyId, setBusyId] = useState<string | null>(null);
+  // Correction groupée (plusieurs actions) : détail affiché avant d'agir, comme pour « Tout optimiser ».
+  const [planFor, setPlanFor] = useState<Finding | null>(null);
+  const onFixClick = (f: Finding) => {
+    if (f.auto && f.steps.length > 1) setPlanFor(f);
+    else void fixOne(f);
+  };
   const fixOne = async (f: Finding) => {
     setBusyId(f.id);
     try {
@@ -190,7 +288,7 @@ function FindingsCard({
                 variant={f.auto ? "indigo" : "secondary"}
                 loading={busyId === f.id}
                 disabled={fixing || (busyId !== null && busyId !== f.id)}
-                onClick={() => void fixOne(f)}
+                onClick={() => onFixClick(f)}
                 icon={f.auto ? undefined : <ArrowRight className="size-3.5" />}
               >
                 {f.fixLabel}
@@ -198,6 +296,18 @@ function FindingsCard({
             </li>
           ))}
         </ul>
+      )}
+      {planFor && (
+        <FixPlanModal
+          title={planFor.title}
+          findings={[planFor]}
+          onClose={() => setPlanFor(null)}
+          onRun={() => {
+            const f = planFor;
+            setPlanFor(null);
+            void fixOne(f);
+          }}
+        />
       )}
     </Card>
   );

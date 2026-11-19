@@ -1,5 +1,11 @@
 # Journal des versions
 
+## 1.1.1
+
+- **Transparence de « Tout optimiser »** : avant d'agir, une fenêtre liste chaque action, sans exception (réglages modifiés, fichiers nettoyés avec leur taille, purge de la RAM, point de restauration de sécurité). Chaque ligne indique le menu où la faire à la main ; un clic y mène directement. Rien n'est lancé sans confirmation.
+- Même détail pour les corrections groupées de l'analyse (« N réglage(s) sans risque », « fichiers inutiles »).
+- « Tout optimiser » n'applique plus que des réglages présents dans un menu, et ne nettoie que les catégories qui contiennent réellement des fichiers.
+
 ## 1.1.0
 
 ### Pour tous

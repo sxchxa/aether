@@ -602,6 +602,13 @@ const es: Messages = {
     ramTitle: "Memoria casi llena ({{percent}})",
     ramDesc: "Libera la memoria sin usar para que tu PC responda mejor.",
     ramFix: "Liberar",
+    stepProtection: "Activar la protección del sistema",
+    stepPoint: "Crear un punto de restauración",
+    planTitle: "Lo que hará «Optimizar todo»",
+    planIntro: "Estas son todas las acciones, sin excepción. Cada una también puede hacerse a mano desde el menú indicado a la derecha.",
+    planSafety: "Seguridad",
+    planRun: "Ejecutar {{count}} acción(es)",
+    planManual: "Abrir este ajuste para hacerlo manualmente",
   },
   quick: {
     ramShort: "RAM",

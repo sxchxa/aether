@@ -603,6 +603,13 @@ const fr = {
     ramTitle: "Mémoire presque pleine ({{percent}})",
     ramDesc: "Libérez la mémoire inutilisée pour retrouver de la réactivité.",
     ramFix: "Libérer",
+    stepProtection: "Activer la protection système",
+    stepPoint: "Créer un point de restauration",
+    planTitle: "Ce que « Tout optimiser » va faire",
+    planIntro: "Voici chaque action, sans exception. Chacune peut aussi être faite à la main depuis le menu indiqué à droite.",
+    planSafety: "Sécurité",
+    planRun: "Lancer les {{count}} action(s)",
+    planManual: "Ouvrir ce réglage pour le faire manuellement",
   },
   quick: {
     ramShort: "RAM",

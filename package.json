@@ -1,7 +1,7 @@
 {
   "name": "aether",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Aether — optimiseur système, stockage, réseau et gaming pour Windows 10/11 (Rust + Tauri v2)",
   "license": "MIT",
   "type": "module",
